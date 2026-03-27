@@ -26,3 +26,10 @@ W pierwszej kolejności utworzyłem test funkcjonalny, który potwierdza błędy
 ### 3.3. Refaktor
 Wydzieliłem z kontrolera logikę, tak aby każda klasa odpowiadała za wybraną część kodu. Utworzyłem `Service`, `Query`, `Exception`, `Dto`. Dodałem testy jednostkowe i funkcjonalne.
 
+## 4. HomeController
+- odkryłem i poprawiłem problemy z wiązane z przypisywaniem użytkownika w każdym cyklu pętli
+- poprawiłem brak wykorzystania `Dependency Injection` dla `PhotoRepository` i `LikeRepository`
+- poprawiłem deklaracje `route` i usunąłem błędny `PHPdoc`
+
+### 4.1. Czego nie poprawiam, choć warto to rozważyć
+- nie wykonałem refaktoru kontrolera i wydzielenia logiki, a co za tym idzie nie tworzyłem nowych testów
