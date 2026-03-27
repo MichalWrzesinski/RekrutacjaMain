@@ -57,3 +57,6 @@ Wydzieliłem z kontrolera logikę, tak aby każda klasa odpowiadała za wybraną
 - encje są nieprecyzyjnie zdefiniowane (bywają rozjazdy typowaniu)
 
 Na tym etapie kończę zadanie nr 1 i przechodzę do kolejnych.
+
+## 4. Zadanie nr 2
+- dodanie pola `phoenixApiToken` w encji `User` (+migracja)
