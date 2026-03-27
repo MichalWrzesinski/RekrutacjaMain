@@ -35,7 +35,7 @@ final class AuthController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
-    #[Route('/logout', name: 'logout', methods: ['POST'])]
+    #[Route('/logout', name: 'logout', methods: ['GET'])]
     public function logout(
         Request $request,
         AuthSessionManager $authSessionManager,
