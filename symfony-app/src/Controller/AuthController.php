@@ -12,26 +12,32 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AuthController extends AbstractController
 {
-    #[Route('/auth/{username}/{token}', name: 'auth_login')]
+    #[Route('/auth/{username}/{token}', name: 'auth_login', methods: ['GET'])]
     public function login(string $username, string $token, Connection $connection, Request $request): Response
     {
-        $sql = "SELECT * FROM auth_tokens WHERE token = '$token'";
-        $result = $connection->executeQuery($sql);
-        $tokenData = $result->fetchAssociative();
+        $tokenData = $connection->fetchAssociative(
+            'SELECT * FROM auth_tokens WHERE token = :token',
+            ['token' => $token],
+        );
 
         if (!$tokenData) {
-            return new Response('Invalid token', 401);
+            return new Response('Unauthorized', 401);
         }
 
-        $userSql = "SELECT * FROM users WHERE username = '$username'";
-        $userResult = $connection->executeQuery($userSql);
-        $userData = $userResult->fetchAssociative();
+        $userData = $connection->fetchAssociative(
+            'SELECT * FROM users WHERE username = :username AND id = :id',
+            [
+                'username' => $username,
+                'id' => (int) $tokenData['user_id'],
+            ],
+        );
 
         if (!$userData) {
-            return new Response('User not found', 404);
+            return new Response('Unauthorized', 401);
         }
 
         $session = $request->getSession();
+        $session->migrate(true);
         $session->set('user_id', $userData['id']);
         $session->set('username', $username);
 
@@ -40,7 +46,7 @@ class AuthController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
-    #[Route('/logout', name: 'logout')]
+    #[Route('/logout', name: 'logout', methods: ['POST'])]
     public function logout(Request $request): Response
     {
         $session = $request->getSession();

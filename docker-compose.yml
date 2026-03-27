@@ -51,7 +51,6 @@ services:
       - symfony-db
       - phoenix
     environment:
-      APP_ENV: dev
       APP_SECRET: ${SYMFONY_APP_SECRET:-thisisasecret222}
       PHOENIX_BASE_URL: http://phoenix:4000
       DATABASE_URL: postgres://postgres:postgres@symfony-db:5432/symfony_app
