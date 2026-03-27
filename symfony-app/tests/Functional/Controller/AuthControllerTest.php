@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 final class AuthControllerTest extends WebTestCase
 {
@@ -62,7 +63,7 @@ final class AuthControllerTest extends WebTestCase
             sprintf('/auth/%s/%s', rawurlencode($username), rawurlencode($token))
         );
 
-        self::assertSame(401, $this->client->getResponse()->getStatusCode());
+        self::assertSame(Response::HTTP_UNAUTHORIZED, $this->client->getResponse()->getStatusCode());
         self::assertSame('Unauthorized', $this->client->getResponse()->getContent());
     }
 
@@ -73,7 +74,7 @@ final class AuthControllerTest extends WebTestCase
             'token' => 'valid-bob-token',
         ];
 
-        yield 'SSL Injection in username' => [
+        yield 'SQL Injection in username' => [
             'username' => "' OR 1=1 -- ",
             'token' => 'valid-bob-token',
         ];

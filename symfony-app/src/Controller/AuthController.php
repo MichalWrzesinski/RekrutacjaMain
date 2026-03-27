@@ -4,54 +4,43 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Doctrine\DBAL\Connection;
+use App\Dto\Input\LoginByTokenInput;
+use App\Exception\Auth\InvalidLoginByTokenCredentialsException;
+use App\Service\Auth\AuthSessionManager;
+use App\Service\Auth\LoginByTokenService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AuthController extends AbstractController
+final class AuthController extends AbstractController
 {
     #[Route('/auth/{username}/{token}', name: 'auth_login', methods: ['GET'])]
-    public function login(string $username, string $token, Connection $connection, Request $request): Response
-    {
-        $tokenData = $connection->fetchAssociative(
-            'SELECT * FROM auth_tokens WHERE token = :token',
-            ['token' => $token],
-        );
-
-        if (!$tokenData) {
-            return new Response('Unauthorized', 401);
+    public function login(
+        string $username,
+        string $token,
+        LoginByTokenService $loginByTokenService,
+        AuthSessionManager $authSessionManager,
+        Request $request,
+    ): Response {
+        try {
+            $authenticatedUser = $loginByTokenService->execute(new LoginByTokenInput($username, $token));
+        } catch (InvalidLoginByTokenCredentialsException) {
+            return new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
 
-        $userData = $connection->fetchAssociative(
-            'SELECT * FROM users WHERE username = :username AND id = :id',
-            [
-                'username' => $username,
-                'id' => (int) $tokenData['user_id'],
-            ],
-        );
-
-        if (!$userData) {
-            return new Response('Unauthorized', 401);
-        }
-
-        $session = $request->getSession();
-        $session->migrate(true);
-        $session->set('user_id', $userData['id']);
-        $session->set('username', $username);
-
-        $this->addFlash('success', 'Welcome back, ' . $username . '!');
+        $authSessionManager->login($authenticatedUser, $request->getSession());
+        $this->addFlash('success', 'Welcome back, ' . $authenticatedUser->username . '!');
 
         return $this->redirectToRoute('home');
     }
 
     #[Route('/logout', name: 'logout', methods: ['POST'])]
-    public function logout(Request $request): Response
-    {
-        $session = $request->getSession();
-        $session->clear();
-
+    public function logout(
+        Request $request,
+        AuthSessionManager $authSessionManager,
+    ): Response {
+        $authSessionManager->logout($request->getSession());
         $this->addFlash('info', 'You have been logged out successfully.');
 
         return $this->redirectToRoute('home');
