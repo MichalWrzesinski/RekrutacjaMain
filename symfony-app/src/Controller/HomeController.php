@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Dto\Input\PhotoFiltersInput;
 use App\Entity\User;
 use App\Likes\LikeRepository;
 use App\Repository\PhotoRepository;
@@ -22,7 +23,16 @@ final class HomeController extends AbstractController
         PhotoRepository $photoRepository,
         LikeRepository $likeRepository,
     ): Response {
-        $photos = $photoRepository->findAllWithUsers();
+        $filters = new PhotoFiltersInput(
+            trim((string) $request->query->get('location', '')),
+            trim((string) $request->query->get('camera', '')),
+            trim((string) $request->query->get('description', '')),
+            trim((string) $request->query->get('taken_at', '')),
+            trim((string) $request->query->get('username', '')),
+        );
+
+        $photos = $photoRepository->findAllWithUsersByFilters($filters);
+
         $userId = $request->getSession()->get('user_id');
         $currentUser = null;
         $userLikes = [];
@@ -49,6 +59,7 @@ final class HomeController extends AbstractController
             'photos' => $photos,
             'currentUser' => $currentUser,
             'userLikes' => $userLikes,
+            'filters' => $filters,
         ]);
     }
 }

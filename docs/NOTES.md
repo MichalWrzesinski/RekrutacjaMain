@@ -65,3 +65,14 @@ Na tym etapie kończę zadanie nr 1 i przechodzę do kolejnych.
 - nie przeszedłem na lepsze zarządzanie użytkownikami (np. użycie komponentu `Security` od `Symfony`)
 - nie tworzyłem testów funkcjonalnych dla `ProfileController`
 - nie szedłem w rozwiązania asynchroniczne do synchronizacji zdjęć z Phoenix, aby nie rozbudowywać zbytnio kodu
+
+## 5. Zadanie nr 3
+- przygotowałem `DTO` z filtrami (przekazujemy je najprościej przez `GET`)
+- zaktualizowałem szablon `twig` i `CSS`
+- rozbudowałem `PhotoRepository` o metodę `findAllWithUsersByFilters`, która obsługuje filtry
+
+### 5.1. Czego nie poprawiam, choć warto to rozważyć
+- nie robiłem refaktoru `HomeController`
+- nie wdrożyłem tam obsługi usera z `sessionUserResolver`, itd.
+- nie przygotowałem dedykowanego komunikat w twig na wypadek braku zdjęć po użyciu filtrów
+- nie dodałem testów

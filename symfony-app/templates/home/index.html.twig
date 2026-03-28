@@ -149,10 +149,124 @@
             font-size: 2em;
             margin-bottom: 10px;
         }
+
+        .filters-box {
+            max-width: 1280px;
+            margin: 0 auto 30px auto;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .filters-form {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(180px, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-field label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-field input {
+            padding: 12px 14px;
+            border: 1px solid #d9d9d9;
+            border-radius: 10px;
+            font-size: 0.95em;
+        }
+
+        .filter-field input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-button,
+        .clear-button {
+            border: none;
+            cursor: pointer;
+            border-radius: 25px;
+            font-weight: 600;
+            padding: 12px 24px;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .filter-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .filter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .clear-button {
+            background: #eef1ff;
+            color: #4b5ed7;
+        }
+
+        .clear-button:hover {
+            transform: translateY(-2px);
+        }
     </style>
 {% endblock %}
 
 {% block body %}
+    <div class="filters-box">
+        <form method="get" action="{{ path('home') }}" class="filters-form">
+            <div class="filter-field">
+                <label for="location">Location</label>
+                <input id="location" type="text" name="location" value="{{ filters.location }}" placeholder="Location">
+            </div>
+
+            <div class="filter-field">
+                <label for="camera">Camera</label>
+                <input id="camera" type="text" name="camera" value="{{ filters.camera }}" placeholder="Camera">
+            </div>
+
+            <div class="filter-field">
+                <label for="description">Description</label>
+                <input id="description" type="text" name="description" value="{{ filters.description }}" placeholder="Description">
+            </div>
+
+            <div class="filter-field">
+                <label for="taken_at">Taken at</label>
+                <input id="taken_at" type="date" name="taken_at" value="{{ filters.takenAt }}">
+            </div>
+
+            <div class="filter-field">
+                <label for="username">Username</label>
+                <input id="username" type="text" name="username" value="{{ filters.username }}" placeholder="Username">
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="filter-button">Filter</button>
+                <a href="{{ path('home') }}" class="clear-button">Clear</a>
+            </div>
+        </form>
+    </div>
+
     {% if photos|length > 0 %}
         <div class="photo-grid">
             {% for photo in photos %}
