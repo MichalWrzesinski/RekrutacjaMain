@@ -100,7 +100,86 @@
             color: #555;
             line-height: 1.6;
         }
-        
+
+        .profile-token-section {
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 24px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .profile-token-title {
+            font-size: 1.1em;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .profile-token-description {
+            color: #666;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .token-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .token-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d9d9d9;
+            border-radius: 10px;
+            font-size: 1em;
+            color: #333;
+            background: white;
+        }
+
+        .token-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+
+        .token-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .primary-button,
+        .secondary-button {
+            border: none;
+            cursor: pointer;
+            border-radius: 25px;
+            font-weight: 600;
+            padding: 12px 24px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .primary-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .primary-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .secondary-button {
+            background: #eef1ff;
+            color: #4b5ed7;
+        }
+
+        .secondary-button:hover {
+            transform: translateY(-2px);
+        }
+
         .back-button {
             display: inline-block;
             margin-top: 30px;
@@ -196,17 +275,39 @@
                 <div class="profile-bio-text">{{ user.bio }}</div>
             </div>
         {% endif %}
-        
+
+        <div class="profile-token-section">
+            <div class="profile-token-title">Phoenix API Token</div>
+            <div class="profile-token-description">
+                Save your Phoenix API access token to enable importing photos from partner applications.
+            </div>
+
+            <form method="post" action="{{ path('profile_phoenix_token_save') }}" class="token-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('save_phoenix_api_token') }}">
+
+                <input
+                        type="text"
+                        name="phoenix_api_token"
+                        class="token-input"
+                        value="{{ user.phoenixApiToken ?? '' }}"
+                        placeholder="Enter Phoenix API token"
+                >
+
+                <div class="token-actions">
+                    <button type="submit" class="primary-button">Save token</button>
+                </div>
+            </form>
+        </div>
+
         <div class="profile-stats">
             <div class="stat-item">
                 <div class="stat-number">{{ user.photos|length }}</div>
                 <div class="stat-label">Photos</div>
             </div>
         </div>
-        
+
         <div style="text-align: center;">
             <a href="{{ path('home') }}" class="back-button">← Back to Gallery</a>
         </div>
     </div>
 {% endblock %}
-

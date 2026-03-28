@@ -4,34 +4,55 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Dto\Input\SavePhoenixTokenInput;
+use App\Resolver\Auth\SessionUserResolver;
+use App\Service\Profile\SavePhoenixTokenService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProfileController extends AbstractController
+final class ProfileController extends AbstractController
 {
-    #[Route('/profile', name: 'profile')]
-    public function profile(Request $request, EntityManagerInterface $em): Response
+    public function __construct(
+        private readonly SessionUserResolver $sessionUserResolver,
+        private readonly SavePhoenixTokenService $savePhoenixTokenService,
+    ) {
+    }
+
+    #[Route('/profile', name: 'profile', methods: ['GET'])]
+    public function profile(Request $request): Response
     {
-        $session = $request->getSession();
-        $userId = $session->get('user_id');
-
-        if (!$userId) {
-            return $this->redirectToRoute('home');
-        }
-
-        $user = $em->getRepository(User::class)->find($userId);
-
-        if (!$user) {
-            $session->clear();
+        $user = $this->sessionUserResolver->resolve($request->getSession());
+        if ($user === null) {
             return $this->redirectToRoute('home');
         }
 
         return $this->render('profile/index.html.twig', [
             'user' => $user,
         ]);
+    }
+
+    #[Route('/profile/phoenix-token', name: 'profile_phoenix_token_save', methods: ['POST'])]
+    public function savePhoenixToken(Request $request): Response
+    {
+        $user = $this->sessionUserResolver->resolve($request->getSession());
+        if ($user === null) {
+            return $this->redirectToRoute('home');
+        }
+
+        if (!$this->isCsrfTokenValid('save_phoenix_api_token', (string) $request->request->get('_token', ''))) {
+            $this->addFlash('error', 'Invalid form token.');
+            return $this->redirectToRoute('profile');
+        }
+
+        $this->savePhoenixTokenService->save(
+            $user,
+            new SavePhoenixTokenInput((string) $request->request->get('phoenix_api_token', ''))
+        );
+
+        $this->addFlash('success', 'Phoenix API token has been saved.');
+
+        return $this->redirectToRoute('profile');
     }
 }

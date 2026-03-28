@@ -10,7 +10,7 @@ Opublikowałem repo na GitHubie w publicznym repo (zgodnie z poleceniem z maila)
 Podsumowanie: zweryfikowałem główne problemy - skupiłem się głównie na `AuthController`, gdzie dokonałem istotnych poprawek, refaktoryzacji oraz utworzyłem testy. Pozostałe klasy przejrzałem - częściowo poprawiłem, częściowo tylko wypisałem uwagi. Części plików nie dotykałem, gdyż mam ograniczony czas na wykonanie zadania rekrutacyjnego. Natomiast w każdym miejscu szedłbym tą samą drogą: najpierw napisanie testów, potem poprawa istotnych błędów, a na końcu refaktoryzacja.
 
 ### 3. AuthController
-Odkryłem istotne podaności i błędy:
+Odkryłem istotne podatności i błędy:
 - podatność na `SQL Injection`
 - błąd w zapytaniu SQL, który nie sprawdza, czy token należy do właściwego użytkownika
 - podatność na enumeracje bazy danych (przez weryfikacje statusów `HTTP`)
@@ -37,22 +37,18 @@ Wydzieliłem z kontrolera logikę, tak aby każda klasa odpowiadała za wybraną
 #### 4.1. Czego nie poprawiam, choć warto to rozważyć
 - nie wykonałem refaktoru kontrolera i wydzielenia logiki, a co za tym idzie nie tworzyłem nowych testów
 
-### 5. Pozostałe klasy, które weryfikowałem ale już bez poprawiania
+### 5. Pozostałe klasy, które weryfikowałem, ale już bez poprawiania
 
 #### 5.1. PhotoController
 - brak wykorzystania `Dependency Injection`
 - za dużo logiki w kontrolerze - wymaga wydzielenia
 - brak metody w konfiguracji `route`
-- klasa mogła by być `final`
+- klasa mogłaby być `final`
 - brak pełnego typowania mimo deklaracji `strict_types`
-- brak sprawdzenia czy użytkownik istnieje i ogólnie brak walidacji
+- brak sprawdzenia, czy użytkownik istnieje i ogólnie brak walidacji
 
-#### 5.2. ProfileController
-- brak metody w konfiguracji `route`
-- klasa mogła by być `final`
-
-#### 5.3. Inne uwagi zbiorcze
-- użycie `#[\Override]` w `LikeRpository`, które nie jest dostepne w PHP 8.1 (doszło w PHP 8.3). PHP zinterpretuje to jako zwykły atrybut
+#### 5.2. Inne uwagi zbiorcze
+- użycie `#[\Override]` w `LikeRpository`, które nie jest dostępne w PHP 8.1 (doszło w PHP 8.3). PHP zinterpretuje to jako zwykły atrybut
 - chaos w katalogu Likes - można by lepiej zorganizować kod
 - encje są nieprecyzyjnie zdefiniowane (bywają rozjazdy typowaniu)
 
@@ -60,3 +56,10 @@ Na tym etapie kończę zadanie nr 1 i przechodzę do kolejnych.
 
 ## 4. Zadanie nr 2
 - dodanie pola `phoenixApiToken` w encji `User` (+migracja)
+- do pliku z szablonem twig dodałem formularz zapisu tokena (można by tam ogarnąć CSS, żeby nie duplikować wspólnych elementów styli)
+- refaktor `ProfileController` (dodanie `UserRepository`, sprawdzanie `CSRF` tokena, wydzielenie obsługi sesji do resolvera `SessionUserResolver`, wydzielenie logiki zapisu do nowego serwisu `SavePhoenixTokenService`)
+- dodałem testy resovlera i zapisu tokena
+
+### 4.1. 4.1. Czego nie poprawiam, choć warto to rozważyć
+- nie przeszedłem na lepsze zarządzanie użytkownikami (np. użycie komponentu `Security` od `Symfony`)
+- nie tworzyłem testów funkcjonalnych dla `ProfileController`
