@@ -59,7 +59,9 @@ Na tym etapie kończę zadanie nr 1 i przechodzę do kolejnych.
 - do pliku z szablonem twig dodałem formularz zapisu tokena (można by tam ogarnąć CSS, żeby nie duplikować wspólnych elementów styli)
 - refaktor `ProfileController` (dodanie `UserRepository`, sprawdzanie `CSRF` tokena, wydzielenie obsługi sesji do resolvera `SessionUserResolver`, wydzielenie logiki zapisu do nowego serwisu `SavePhoenixTokenService`)
 - dodałem testy resovlera i zapisu tokena
+- dodałem przycisk do synchronizacji zdjęć z Phoenix
 
-### 4.1. 4.1. Czego nie poprawiam, choć warto to rozważyć
+### 4.1. Czego nie poprawiam, choć warto to rozważyć
 - nie przeszedłem na lepsze zarządzanie użytkownikami (np. użycie komponentu `Security` od `Symfony`)
 - nie tworzyłem testów funkcjonalnych dla `ProfileController`
+- nie szedłem w rozwiązania asynchroniczne do synchronizacji zdjęć z Phoenix, aby nie rozbudowywać zbytnio kodu

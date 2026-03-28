@@ -55,4 +55,21 @@ final class ProfileController extends AbstractController
 
         return $this->redirectToRoute('profile');
     }
+
+    #[Route('/profile/phoenix-import', name: 'profile_phoenix_photos_import', methods: ['POST'])]
+    public function importPhoenixPhotos(Request $request): Response
+    {
+        $user = $this->sessionUserResolver->resolve($request->getSession());
+        if ($user === null) {
+            return $this->redirectToRoute('home');
+        }
+
+        if (!$this->isCsrfTokenValid('import_phoenix_photos', (string) $request->request->get('_token', ''))) {
+            $this->addFlash('error', 'Invalid form token.');
+
+            return $this->redirectToRoute('profile');
+        }
+
+        return $this->redirectToRoute('profile');
+    }
 }
