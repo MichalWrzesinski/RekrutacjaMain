@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Dto\Input\SavePhoenixTokenInput;
+use App\Exception\InvalidPhoenixApiTokenException;
 use App\Resolver\Auth\SessionUserResolver;
+use App\Service\Profile\ImportPhoenixPhotosService;
 use App\Service\Profile\SavePhoenixTokenService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +19,7 @@ final class ProfileController extends AbstractController
     public function __construct(
         private readonly SessionUserResolver $sessionUserResolver,
         private readonly SavePhoenixTokenService $savePhoenixTokenService,
+        private readonly ImportPhoenixPhotosService $importPhoenixPhotosService,
     ) {
     }
 
@@ -66,9 +69,17 @@ final class ProfileController extends AbstractController
 
         if (!$this->isCsrfTokenValid('import_phoenix_photos', (string) $request->request->get('_token', ''))) {
             $this->addFlash('error', 'Invalid form token.');
-
             return $this->redirectToRoute('profile');
         }
+
+        try {
+            $importedCount = $this->importPhoenixPhotosService->import($user);
+        } catch (InvalidPhoenixApiTokenException) {
+            $this->addFlash('error', 'Invalid Phoenix API token.');
+            return $this->redirectToRoute('profile');
+        }
+
+        $this->addFlash('success', sprintf('%d photos have been imported.', $importedCount));
 
         return $this->redirectToRoute('profile');
     }
