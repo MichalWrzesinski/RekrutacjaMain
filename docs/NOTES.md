@@ -76,3 +76,7 @@ Na tym etapie kończę zadanie nr 1 i przechodzę do kolejnych.
 - nie wdrożyłem tam obsługi usera z `sessionUserResolver`, itd.
 - nie przygotowałem dedykowanego komunikat w twig na wypadek braku zdjęć po użyciu filtrów
 - nie dodałem testów
+
+## 6. Zadanie nr 6
+Tutaj od razu wprost mówię, że nie znam Phoenix ani Elixir (choć chętnie się nauczę). Zatem posiłkowałem się w zasadzie tylko AI. Nie jest to mój kod, choć poświęciłem czas na jego analize i próbę zrozumienia.
+Testowałem go z konsoli i pierwsze 5 requestów dało `HTTP 200`, a kolejne `HTTP 429`.
