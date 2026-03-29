@@ -1,4 +1,5 @@
 # Notatki z realizacji zadania
+Podsumowanie całości: zlokalizowałem główne problemy i luki bezpieczeństwa w `SymfonyApi`. W kilku miejscach dokonałem refaktoru i wydzielenia logiki do mniejszych klasy (ogólnie cały projekt powinien być bardziej rozdzielony). Dodałem kilka testów funkcjonalnych i jednostkowych. Jeżeli jakiś miejsc nie ruszałem, to starałem się wypisać chociaż elementy, które uważam, że warto poprawić.
 
 ## 1. Instalacja
 Pobrałem pliki, przejrzałem pobieżnie kod źródłowy (zlokalizowałem od razu kilka problemów, które będę realizował w kolejnych krokach). Odpaliłem lokalnie oba API. Podpiąłem do PHPStorm bazy danych i zweryfikowałem dostępy.
